@@ -13,12 +13,17 @@ public class Missile {
     public static final int HEIGHT = 10;
     private int x, y;
     private Tank.Direction direction;
-
+    private boolean live = true;
+    private TankClient tankClient;
 
     public Missile(int x, int y, Tank.Direction direction) {
         this.x = x;
         this.y = y;
         this.direction = direction;
+    }
+    public Missile(int x, int y, Tank.Direction direction,TankClient tankClient) {
+        this(x, y, direction);
+        this.tankClient = tankClient;
     }
 
     public void draw(Graphics g) {
@@ -62,7 +67,14 @@ public class Missile {
                 break;
             default:
                 break;
-
         }
+        if (x < 0 || y < 0 || x > TankClient.GAME_WIDTH || y > TankClient.GAME_HEIGHT) {
+            live = false;
+            tankClient.missiles.remove(this);
+        }
+    }
+
+    public boolean isLive() {
+        return live;
     }
 }

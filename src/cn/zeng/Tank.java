@@ -117,12 +117,21 @@ public class Tank {
         if (!this.direction.equals(Direction.STOP)) {
             this.ptDirection = this.direction;
         }
+        if(x<0){
+            x=0;
+        }else if(y<25){
+            y=25;
+        }else if(x>TankClient.GAME_WIDTH-Tank.WIDTH){
+            x = TankClient.GAME_WIDTH - Tank.WIDTH;
+        }else if(y>TankClient.GAME_HEIGHT-Tank.HEIGHT){
+            y = TankClient.GAME_HEIGHT - Tank.HEIGHT;
+        }
     }
 
     private Missile fire() {
         int x = this.x + Tank.WIDTH / 2 - Missile.WIDTH / 2;
         int y = this.y + Tank.HEIGHT / 2 - Missile.HEIGHT / 2;
-        Missile missile = new Missile(x, y, ptDirection);
+        Missile missile = new Missile(x, y, ptDirection, this.tankClient);
         this.tankClient.missiles.add(missile);
         return missile;
     }
@@ -142,6 +151,7 @@ public class Tank {
                 bD = true;
                 break;
             case KeyEvent.VK_META:
+            case KeyEvent.VK_CONTROL:
                 fire();
                 break;
 
