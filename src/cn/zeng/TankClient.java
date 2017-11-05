@@ -17,12 +17,20 @@ public class TankClient extends Frame {
     public static final int GAME_HEIGHT = 600;
 
     private Image offScreenImage = null;
-
+    Wall wall = new Wall(400, 200, this);
     Tank myTank = new Tank(50, 50, this);
     List<Missile> missiles = new ArrayList<>(16);
+    List<Explode> explodes = new ArrayList<>(16);
+    List<Tank> tanks = new ArrayList<>(16);
 
 
     public void launchFrame() {
+
+
+        for (int i = 0; i < 10; i++) {
+            Tank tank = new Tank(70 + 40 * (i + 1), 70, this, false, Tank.Direction.D);
+            this.tanks.add(tank);
+        }
         this.setTitle("TankWar");
         this.setLocation(400, 300);
         this.setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -42,13 +50,35 @@ public class TankClient extends Frame {
 
     @Override
     public void paint(Graphics g) {
+        wall.draw(g);
+
         if (!missiles.isEmpty()) {
             for (int i = 0; i < missiles.size(); i++) {
-                missiles.get(i).draw(g);
+                Missile missile = missiles.get(i);
+                missile.hitTanks(this.tanks);
+                missile.hitTank(myTank);
+                missile.collideWall(wall);
+                missile.draw(g);
             }
         }
+        for (int i = 0; i < explodes.size(); i++) {
+            Explode explode = explodes.get(i);
+            explode.draw(g);
+
+        }
+        for (int i = 0; i < tanks.size(); i++) {
+            Tank tank = tanks.get(i);
+            tank.collideWall(wall);
+            tank.collideTanks(tanks);
+            tank.draw(g);
+        }
         myTank.draw(g);
-        g.drawString("missiles count:" + missiles.size(), 10, 40);
+        myTank.collideTanks(tanks);
+        myTank.collideWall(wall);
+        g.drawString("missiles   count:" + missiles.size(), 10, 40);
+        g.drawString("explodes   count:" + explodes.size(), 10, 60);
+        g.drawString("tanks      count:" + tanks.size(), 10, 80);
+        g.drawString("myTank     life:" + myTank.getLife(), 10, 100);
 
     }
 
@@ -78,7 +108,7 @@ public class TankClient extends Frame {
             while (true) {
                 repaint();
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
