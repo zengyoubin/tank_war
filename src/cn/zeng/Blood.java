@@ -8,7 +8,16 @@ import java.awt.*;
 public class Blood {
     public static final int WIDTH = 10;
     public static final int HEIGHT = 10;
-    private TankClient tankClient;
+
+    public boolean isLive() {
+        return live;
+    }
+
+    public void setLive(boolean live) {
+        this.live = live;
+    }
+
+    private boolean live = true;
     private int x, y;
     private int step;
     private int[][] position = {
@@ -22,7 +31,9 @@ public class Blood {
 
 
     public void draw(Graphics g) {
-
+        if (!live) {
+            return;
+        }
         Color color = g.getColor();
         g.setColor(Color.MAGENTA);
         g.fillRect(x, y, WIDTH, HEIGHT);
@@ -40,4 +51,9 @@ public class Blood {
         this.x = position[step][0];
         this.y = position[step][1];
     }
+
+    public Rectangle getRect() {
+        return new Rectangle(x, y, WIDTH, HEIGHT);
+    }
+
 }

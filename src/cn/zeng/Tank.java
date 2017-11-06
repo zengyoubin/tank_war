@@ -248,6 +248,12 @@ public class Tank {
 
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_F2:
+                if(!this.live){
+                    this.live = true;
+                    this.life = 100;
+                }
+                break;
             case KeyEvent.VK_RIGHT:
                 bR = true;
                 break;
@@ -329,6 +335,14 @@ public class Tank {
         }
     }
 
+    public boolean eatBlood(Blood blood){
+        if(this.good&&blood.isLive()&&this.getRect().intersects(blood.getRect())){
+            this.life = 100;
+            blood.setLive(false);
+            return true;
+        }
+        return false;
+    }
     private class BloodBar {
         public void draw(Graphics g) {
             Color color = g.getColor();

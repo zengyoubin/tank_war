@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -22,6 +21,7 @@ public class TankClient extends Frame {
     List<Missile> missiles = new ArrayList<>(16);
     List<Explode> explodes = new ArrayList<>(16);
     List<Tank> tanks = new ArrayList<>(16);
+    Blood blood = new Blood();
 
 
     public void launchFrame() {
@@ -50,7 +50,14 @@ public class TankClient extends Frame {
 
     @Override
     public void paint(Graphics g) {
+        if (tanks.isEmpty()) {
+            for (int i = 0; i < 5; i++) {
+                Tank tank = new Tank(70 + 40 * (i + 1), 70, this, false, Tank.Direction.D);
+                this.tanks.add(tank);
+            }
+        }
         wall.draw(g);
+        blood.draw(g);
 
         if (!missiles.isEmpty()) {
             for (int i = 0; i < missiles.size(); i++) {
@@ -73,6 +80,7 @@ public class TankClient extends Frame {
             tank.draw(g);
         }
         myTank.draw(g);
+        myTank.eatBlood(blood);
         myTank.collideTanks(tanks);
         myTank.collideWall(wall);
         g.drawString("missiles   count:" + missiles.size(), 10, 40);
